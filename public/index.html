@@ -223,6 +223,7 @@ header,.blk{position:relative;z-index:2}
 .ftext{min-height:90px;resize:vertical;line-height:1.45}
 .opt{color:var(--td);font-weight:400;text-transform:none;letter-spacing:0}
 .anchor{display:none}
+.hpot{position:absolute;left:-9999px;top:0;width:1px;height:1px;opacity:0;pointer-events:none}
 .more-content{display:none}
 .modal{position:fixed;inset:0;z-index:60;display:flex;align-items:flex-end;justify-content:center;
   --ac:#DE8E83;--ac-soft:#EDA89E;--ac-deep:#C9847A;--line:rgba(255,255,255,.07);--tp:#F3EEEC;--ts:#C9C3C1;--tm:#A39C98}
@@ -360,8 +361,8 @@ header,.blk{position:relative;z-index:2}
   /* ---- contact form: phone + nick side by side ---- */
   .cform{ display:grid; grid-template-columns:1fr 1fr; gap:18px 22px; }
   .cform > *{ grid-column:1 / -1; }
-  .cform > .field:nth-child(1),
-  .cform > .field:nth-child(2){ grid-column:auto; }
+  .cform .field:has(#cf-phone),
+  .cform .field:has(#cf-nick){ grid-column:auto; }
 }
 
 /* slightly wider container on large monitors */
@@ -518,6 +519,7 @@ header,.blk{position:relative;z-index:2}
     <h2 class="cta-h">Есть задача для AI, биосигналов или иммерсивного формата?</h2>
     <p class="sub">Соберём решение, которое можно запустить в команде, обучении, событии или продукте.</p>
     <form class="cform" novalidate>
+      <input class="hpot" type="text" name="company" tabindex="-1" autocomplete="off" aria-hidden="true">
       <div class="field">
         <label class="flabel" for="cf-phone">Телефон</label>
         <input class="finput" id="cf-phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="+7 900 000-00-00">
@@ -889,16 +891,45 @@ document.querySelectorAll('.faq .faq-q').forEach(function(b){
     var phone=form.querySelector('#cf-phone'),nick=form.querySelector('#cf-nick');
     var err=form.querySelector('.cform-err');
     if(!phone.value.trim()&&!nick.value.trim()){
-      if(err)err.hidden=false;
+      if(err){err.textContent='Оставьте телефон или ник, чтобы я мог ответить.';err.hidden=false;}
       phone.classList.add('invalid');nick.classList.add('invalid');
       phone.focus();return;
     }
     if(err)err.hidden=true;
     phone.classList.remove('invalid');nick.classList.remove('invalid');
     var note=form.querySelector('.cform-note');
-    if(note)note.hidden=false;
-    form.querySelector('.cta-submit').disabled=true;
-    // данные: phone.value, nick.value, comment, выбранный .choice[aria-checked="true"].dataset.val
+    var submit=form.querySelector('.cta-submit');
+    var label=submit.querySelector('.ctxt');
+    var checked=group.querySelector('.choice[aria-checked="true"]');
+    var payload={
+      phone:phone.value.trim(),
+      nick:nick.value.trim(),
+      method:checked?checked.dataset.val:'',
+      comment:(form.querySelector('#cf-comment')||{}).value||'',
+      company:(form.querySelector('input[name="company"]')||{}).value||''  // honeypot
+    };
+    submit.disabled=true;
+    var prevLabel=label?label.textContent:'';
+    if(label)label.textContent='Отправляю…';
+    fetch('/api/lead',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify(payload)
+    }).then(function(r){return r.json().catch(function(){return {ok:r.ok};});})
+      .then(function(res){
+        if(res&&res.ok){
+          if(note)note.hidden=false;
+          form.reset();
+          group.querySelectorAll('.choice').forEach(function(o){o.setAttribute('aria-checked','false');});
+          if(label)label.textContent='Отправлено';
+        }else{
+          throw new Error((res&&res.error)||'send_failed');
+        }
+      }).catch(function(){
+        if(err){err.textContent='Не удалось отправить. Попробуйте ещё раз или напишите в Telegram напрямую.';err.hidden=false;}
+        submit.disabled=false;
+        if(label)label.textContent=prevLabel;
+      });
   });
   // снять подсветку/ошибку при вводе
   ['#cf-phone','#cf-nick'].forEach(function(sel){
