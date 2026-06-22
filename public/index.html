@@ -29,6 +29,7 @@
 }
 *{margin:0;padding:0;box-sizing:border-box}
 html,body{background:var(--bg);color:var(--ts);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+html{scroll-behavior:smooth}
 body{font:300 17px/1.6 var(--fb);letter-spacing:.01em}
 ::selection{background:var(--accent);color:var(--tp)}
 a{color:inherit;text-decoration:none}
@@ -403,7 +404,7 @@ header,.blk{position:relative;z-index:2}
       <p>AI-системы, нейроинтерактивы <br>и нейротренажёры — <br>для людей, команд и брендов.</p>
       <p>Продукты и форматы, <br>которые запускают, измеряют <br>и продолжают использовать.</p>
     </div>
-    <a class="cta" href="#">Make it real! <span class="arr">→</span></a>
+    <a class="cta" href="#cta">Make it real! <span class="arr">→</span></a>
   </div>
 </div>
 
@@ -926,7 +927,7 @@ document.querySelectorAll('.faq .faq-q').forEach(function(b){
           throw new Error((res&&res.error)||'send_failed');
         }
       }).catch(function(){
-        if(err){err.textContent='Не удалось отправить. Попробуйте ещё раз или напишите в Telegram напрямую.';err.hidden=false;}
+        if(err){err.textContent='Не удалось отправить. Попробуйте ещё раз.';err.hidden=false;}
         submit.disabled=false;
         if(label)label.textContent=prevLabel;
       });
