@@ -300,6 +300,68 @@ header,.blk{position:relative;z-index:2}
 
 
 </style>
+
+<style>
+/* ============================================================
+   Desktop adaptation (≥900px)
+   The design keeps a single centred column so the vertical "ray"
+   spine + section markers stay aligned. Backgrounds stay full-bleed;
+   only the inner content is capped via a centred gutter. The hero JS
+   re-measures real rects on resize, so the ray follows automatically.
+   ============================================================ */
+@media (min-width:900px){
+  :root{ --gutter:max(40px, (100vw - 1040px) / 2); }
+
+  /* full-bleed bg, content capped & centred */
+  .hero{ padding-left:var(--gutter); padding-right:var(--gutter); padding-bottom:72px; }
+  .wmd{ padding-left:var(--gutter); padding-right:var(--gutter); padding-top:48px; padding-bottom:72px; }
+
+  /* ---- header: brand + inline nav (no burger) ---- */
+  .nav{ padding-top:22px; }
+  .burger{ display:none; }
+  .menu{ position:absolute; top:20px; left:auto; right:var(--gutter); width:auto;
+    transform:none; background:none; box-shadow:none; padding:0; z-index:8;
+    -webkit-backdrop-filter:none; backdrop-filter:none;
+    display:flex; align-items:center; gap:36px; }
+  .menu a{ border:0; padding:6px 0; font:600 13px/1 var(--fd);
+    letter-spacing:.12em; text-transform:uppercase; color:var(--ts);
+    transition:color .2s var(--eo); }
+  .menu a:hover{ color:var(--tp); }
+  .menu a:last-child{ color:var(--ray-hi); }
+  .menu a:last-child:hover{ color:var(--ray-core); }
+
+  /* ---- hero text block ---- */
+  .col{ margin-top:clamp(24px,3vh,44px); max-width:520px; }
+  .lede{ font:600 clamp(22px,2.2vw,28px)/1.32 var(--fd); }
+  .sub p{ font-size:clamp(15px,1.3vw,17px); }
+
+  /* ---- "Что мы делаем" / sections: roomier cards ---- */
+  .wmd .lead{ max-width:640px; }
+  .blk{ padding:30px 30px 26px; border-radius:24px; }
+  .blk.last{ padding-bottom:34px; }
+  .h1{ font-size:clamp(34px,3.6vw,46px); }
+  .wmd .sub{ font-size:15px; max-width:760px; }
+  .desc{ font-size:15px; max-width:760px; }
+  .faq-q{ font-size:17px; }
+  .cta-h{ font-size:clamp(26px,2.8vw,34px); max-width:780px; }
+
+  /* hover affordance on service cards */
+  .blk{ transition:border-color .25s var(--eo), box-shadow .25s var(--eo), transform .25s var(--eo); }
+  .blk:not(.last):hover{ transform:translateY(-2px);
+    box-shadow:0 0 30px rgba(222,142,131,.12), inset 0 0 28px rgba(222,142,131,.05); }
+
+  /* ---- contact form: phone + nick side by side ---- */
+  .cform{ display:grid; grid-template-columns:1fr 1fr; gap:18px 22px; }
+  .cform > *{ grid-column:1 / -1; }
+  .cform > .field:nth-child(1),
+  .cform > .field:nth-child(2){ grid-column:auto; }
+}
+
+/* slightly wider container on large monitors */
+@media (min-width:1440px){
+  :root{ --gutter:max(40px, (100vw - 1120px) / 2); }
+}
+</style>
 </head>
 <body>
 <div class="hero">
