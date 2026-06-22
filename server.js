@@ -157,15 +157,18 @@ function serveStatic(req, res) {
       // fall back to index.html
       fs.readFile(path.join(DIR, 'index.html'), (e2, d2) => {
         if (e2) { res.writeHead(404); return res.end('Not found'); }
-        res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
+        res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-cache' });
         res.end(d2);
       });
       return;
     }
     const ext = path.extname(filePath).toLowerCase();
     const headers = { 'Content-Type': TYPES[ext] || 'application/octet-stream' };
-    // cache static assets (not the HTML) for a year
-    if (ext !== '.html') headers['Cache-Control'] = 'public, max-age=31536000, immutable';
+    // HTML must always revalidate (so deploys show up immediately);
+    // fingerprint-free static assets are cached for a year.
+    headers['Cache-Control'] = (ext === '.html')
+      ? 'no-cache'
+      : 'public, max-age=31536000, immutable';
     res.writeHead(200, headers);
     res.end(data);
   });
