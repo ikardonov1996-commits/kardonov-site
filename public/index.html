@@ -330,13 +330,20 @@ header,.blk{position:relative;z-index:2}
   .menu a:last-child{ color:var(--ray-hi); }
   .menu a:last-child:hover{ color:var(--ray-core); }
 
-  /* ---- hero text block ---- */
-  .col{ margin-top:clamp(24px,3vh,44px); max-width:680px; }
-  .lede{ font:600 clamp(26px,2.7vw,36px)/1.3 var(--fd); }
-  .sub p{ font-size:clamp(16px,1.4vw,19px); }
+  /* ---- hero text block (width set by JS up to the brain's edge) ---- */
+  .col{ margin-top:clamp(24px,3vh,44px); max-width:720px; }
+  .col br{ display:none; }                 /* let copy reflow to full width */
+  .lede{ font:600 clamp(28px,3vw,42px)/1.26 var(--fd); }
+  .sub{ margin-top:clamp(20px,3vh,30px); }
+  .sub p{ font-size:clamp(16px,1.45vw,19px); line-height:1.5; }
 
-  /* ---- "Что мы делаем" / sections: roomier cards ---- */
-  .wmd .lead{ max-width:640px; }
+  /* ---- "Что мы делаем": two cards per row ---- */
+  #wmd{ display:grid; grid-template-columns:1fr 1fr; gap:22px 24px; align-items:stretch; }
+  #wmd > header{ grid-column:1 / -1; }
+  #wmd > .blk{ margin-top:0; }
+  #wmd > .blk.last{ grid-column:1 / -1; }   /* last card full width, under the ray/+ */
+
+  /* ---- sections: roomier cards ---- */
   .blk{ padding:30px 30px 26px; border-radius:24px; }
   .blk.last{ padding-bottom:34px; }
   .h1{ font-size:clamp(34px,3.6vw,46px); }
@@ -390,10 +397,10 @@ header,.blk{position:relative;z-index:2}
   </div>
 
   <div class="col">
-    <p class="lede"><span class="nb">Превращаем AI,</span><br>биосигналы и новые<br>форматы — в опыт,<br>который работает.</p>
+    <p class="lede"><span class="nb">Превращаем AI,</span> <br>биосигналы и новые <br>форматы — в опыт, <br>который работает.</p>
     <div class="sub">
-      <p>AI-системы, нейроинтерактивы<br>и нейротренажёры —<br>для людей, команд и брендов.</p>
-      <p>Продукты и форматы,<br>которые запускают, измеряют<br>и продолжают использовать.</p>
+      <p>AI-системы, нейроинтерактивы <br>и нейротренажёры — <br>для людей, команд и брендов.</p>
+      <p>Продукты и форматы, <br>которые запускают, измеряют <br>и продолжают использовать.</p>
     </div>
     <a class="cta" href="#">Make it real! <span class="arr">→</span></a>
   </div>
@@ -795,9 +802,19 @@ function meshFrame(now){
   meEc.setAttribute('opacity',(0.32+0.5*Math.max(0,Math.min(1, (mpt.on?0.5:0)))).toFixed(2));
 }
 function startMesh(){ if(meshOn)return; meshOn=true; requestAnimationFrame(meshFrame); }
+/* ===== desktop: widen hero copy up to the brain's left edge ===== */
+const colEl=document.querySelector('.col');
+function adjustHeroText(){
+  if(!colEl)return;
+  if(innerWidth<900){colEl.style.maxWidth='';return;}
+  const br=brain.getBoundingClientRect(), cr=colEl.getBoundingClientRect();
+  const gap=46;                                  // breathing room before the brain
+  const w=Math.round(br.left-cr.left-gap);
+  colEl.style.maxWidth=Math.max(420,w)+'px';     // never collide with the brain
+}
 function setup(){
   if(!built){buildMeshSVG();built=true;if(!mReduce)startMesh();}
-  fitTitle();positionLayout();renderMesh();positionRay();
+  fitTitle();positionLayout();adjustHeroText();renderMesh();positionRay();
 }
 function kick(){ (humanImg&&!humanImg.complete) ? humanImg.addEventListener('load',setup,{once:true}) : setup(); }
 if(document.fonts&&document.fonts.ready){document.fonts.ready.then(setup);}
