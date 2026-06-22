@@ -1,0 +1,12 @@
+{
+  "name": "kardonov-site",
+  "version": "1.0.0",
+  "private": true,
+  "description": "KARDONOV — Human × AI Studio landing page",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
