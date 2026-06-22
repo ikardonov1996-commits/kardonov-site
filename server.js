@@ -108,7 +108,7 @@ async function handleLead(req, res) {
 
   const phone = String(data.phone || '').trim().slice(0, 100);
   const nick = String(data.nick || '').trim().slice(0, 100);
-  const method = String(data.method || '').trim().slice(0, 40);
+  const method = String(data.method || '').trim().slice(0, 120);
   const comment = String(data.comment || '').trim().slice(0, 2000);
 
   if (!phone && !nick) return sendJson(res, 400, { ok: false, error: 'need_contact' });

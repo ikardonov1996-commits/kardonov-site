@@ -532,11 +532,11 @@ header,.blk{position:relative;z-index:2}
       <p class="fhint">Достаточно одного — телефон <b>или</b> ник.</p>
       <div class="field">
         <span class="flabel">Способ связи</span>
-        <div class="choices" role="radiogroup" aria-label="Способ связи">
-          <button class="choice" type="button" role="radio" aria-checked="false" data-val="Telegram">Telegram</button>
-          <button class="choice" type="button" role="radio" aria-checked="false" data-val="WhatsApp">WhatsApp</button>
-          <button class="choice" type="button" role="radio" aria-checked="false" data-val="MAX">MAX</button>
-          <button class="choice" type="button" role="radio" aria-checked="false" data-val="Звонок">Звонок</button>
+        <div class="choices" role="group" aria-label="Способ связи">
+          <button class="choice" type="button" role="checkbox" aria-checked="false" data-val="Telegram">Telegram</button>
+          <button class="choice" type="button" role="checkbox" aria-checked="false" data-val="WhatsApp">WhatsApp</button>
+          <button class="choice" type="button" role="checkbox" aria-checked="false" data-val="MAX">MAX</button>
+          <button class="choice" type="button" role="checkbox" aria-checked="false" data-val="Звонок">Звонок</button>
         </div>
       </div>
       <div class="field">
@@ -883,8 +883,7 @@ document.querySelectorAll('.faq .faq-q').forEach(function(b){
   var group=form.querySelector('.choices');
   group.querySelectorAll('.choice').forEach(function(c){
     c.addEventListener('click',function(){
-      group.querySelectorAll('.choice').forEach(function(o){o.setAttribute('aria-checked','false');});
-      c.setAttribute('aria-checked','true');
+      c.setAttribute('aria-checked',c.getAttribute('aria-checked')==='true'?'false':'true');
     });
   });
   form.addEventListener('submit',function(e){
@@ -901,11 +900,13 @@ document.querySelectorAll('.faq .faq-q').forEach(function(b){
     var note=form.querySelector('.cform-note');
     var submit=form.querySelector('.cta-submit');
     var label=submit.querySelector('.ctxt');
-    var checked=group.querySelector('.choice[aria-checked="true"]');
+    var checked=Array.prototype.map.call(
+      group.querySelectorAll('.choice[aria-checked="true"]'),
+      function(c){return c.dataset.val;});
     var payload={
       phone:phone.value.trim(),
       nick:nick.value.trim(),
-      method:checked?checked.dataset.val:'',
+      method:checked.join(', '),
       comment:(form.querySelector('#cf-comment')||{}).value||'',
       company:(form.querySelector('input[name="company"]')||{}).value||''  // honeypot
     };
