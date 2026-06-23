@@ -144,6 +144,8 @@ async function handleLead(req, res) {
 function serveStatic(req, res) {
   let urlPath = decodeURIComponent((req.url || '/').split('?')[0]);
   if (urlPath === '/') urlPath = '/index.html';
+  // clean English route: /en and /en/ map to en.html
+  if (urlPath === '/en' || urlPath === '/en/') urlPath = '/en.html';
 
   const filePath = path.join(DIR, path.normalize(urlPath));
   // prevent path traversal outside /public
