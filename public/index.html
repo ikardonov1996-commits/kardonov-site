@@ -202,7 +202,7 @@ section{padding-block:56px;}
 .svc-screen--human .svc-screen__media{background:radial-gradient(70% 60% at var(--gx,78%) var(--gy,30%),rgb(214 194 165 / 10%),transparent 70%);}
 .svc-screen--ai .svc-screen__media{background:radial-gradient(70% 60% at var(--gx,78%) var(--gy,30%),rgb(157 168 184 / 10%),transparent 70%);}
 .svc-screen--open .svc-screen__media{background:radial-gradient(60% 50% at 50% 40%,rgb(214 194 165 / 6%),transparent 70%),radial-gradient(60% 50% at 70% 60%,rgb(157 168 184 / 6%),transparent 70%);}
-.svc-screen__title{font-family:var(--font-display);font-weight:800;font-size:clamp(32px,9.2vw,104px);hyphens:manual;overflow-wrap:break-word;line-height:.94;letter-spacing:-.025em;max-width:12ch;}
+.svc-screen__title{font-family:var(--font-display);font-weight:800;font-size:clamp(30px,6.4vw,84px);line-height:.94;letter-spacing:-.025em;overflow-wrap:normal;hyphens:manual;}
 .svc-screen__text{margin-top:20px;font-size:clamp(16px,1.5vw,20px);line-height:1.5;color:var(--content-secondary);max-width:44ch;}
 .svc-screen__foot{margin-top:24px;margin-left:-10px;}
 .svc-screen .more-content{max-width:680px;}
@@ -217,6 +217,17 @@ section{padding-block:56px;}
 .more-content p{color:var(--content-secondary);font-size:16px;max-width:60ch;}
 .more-content p+p{margin-top:10px;}
 .more-content .note{margin-top:16px;color:var(--content-primary);}
+
+/* mobile: picture on top, copy below on the canvas (no text over busy image) */
+@media(max-width:699px){
+  .svc-screen{display:block;min-height:0;padding:0 0 56px;}
+  .svc-screen__media{position:relative;inset:auto;height:clamp(320px,56svh,500px);margin-bottom:-56px;}
+  .svc-screen__media img{object-position:50% 0;}
+  .svc-screen__media::after{background:linear-gradient(180deg,var(--canvas) 0%,rgb(14 14 16 / 0%) 16%,rgb(14 14 16 / 0%) 55%,var(--canvas) 100%);}
+}
+/* desktop: when details are open, the picture steps back */
+.svc-screen__media::before{content:"";position:absolute;inset:0;z-index:1;background:rgb(14 14 16 / 0%);transition:background var(--motion-base) var(--ease-standard);pointer-events:none;}
+.svc-screen.is-expanded .svc-screen__media::before{background:rgb(14 14 16 / 62%);}
 
 /* ===== Clients: logo wall (logos only) ===== */
 /* flex, not a fixed grid: the last row stretches, so any number of logos leaves no empty tiles */
@@ -414,7 +425,7 @@ section{padding-block:56px;}
     </div></div>
   </section>
   <section class="svc-screen svc-screen--open" aria-labelledby="svc-5">
-    <div class="svc-screen__media" aria-hidden="true"></div>
+    <div class="svc-screen__media" aria-hidden="true"><picture><source media="(max-width: 699px)" srcset="img/solutions-mobile.webp" width="941" height="1672"><img src="img/solutions-desktop.webp" alt="" width="1672" height="941" loading="lazy" decoding="async"></picture></div>
     <div class="shell"><div class="content-grid">
       <h3 class="svc-screen__title" id="svc-5">Решения под задачу</h3>
       <p class="svc-screen__text">Собираем решение под вашу задачу.</p>
@@ -536,6 +547,7 @@ section{padding-block:56px;}
     btn.addEventListener('click',function(){
       var o=btn.getAttribute('aria-expanded')!=='true';
       btn.setAttribute('aria-expanded',o?'true':'false');panel.classList.toggle('is-open',o);
+      var sec=btn.closest('.svc-screen');if(sec)sec.classList.toggle('is-expanded',o);
       label.textContent=o?'Свернуть':'Подробнее';
     });
   });
