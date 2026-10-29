@@ -10,6 +10,9 @@
 #   * tool marks as small inward displacement only: point furrows + claw combs on worked planes, point pits
 #     on the base top and in the trench, ragged pitch steps on broken faces; original C1 faces untouched.
 # Every boolean is volume-validated. Figure mesh is copied verbatim from the backup (anim_carving_v2.blend).
+# v3: ends with the client-approved pedestal fixes from fix_pedestal_v3.py (spall instead of round pocket, no patina
+#   on the pedestal, subbia rows on its faces). NB: the FAST booleans make a full rebuild re-seed chips/tool marks on
+#   the whole remnant; the shipped v3 file was made by running fix_pedestal_v3.py alone on the v2 file.
 # usage: blender -b anim_carving.blend -P build_freed.py -- OUT.blend [BACKUP.blend]
 import bpy, bmesh, sys, os, numpy as np
 from mathutils import Vector, Matrix
@@ -430,6 +433,16 @@ for me in list(bpy.data.meshes):
     if me.users == 0: bpy.data.meshes.remove(me)
 C4["c4_version"] = 2
 print("C4_Freed: %d faces, open edges %d" % (len(C4.data.polygons), holes(C4)))
+
+# ------------------------------------------------------------------ v3: client-approved pedestal fixes (post-pass)
+# faceted spall instead of the round trench pocket by the right foot; no patina on the pedestal; subbia rows on the
+# pedestal faces instead of round pits. See fix_pedestal_v3.py (also runnable alone on a finished v2 file).
+import importlib.util
+_fp = os.path.join(os.path.dirname(os.path.abspath(__file__)), "fix_pedestal_v3.py")
+_sp = importlib.util.spec_from_file_location("fix_pedestal_v3", _fp); _fx = importlib.util.module_from_spec(_sp)
+_sp.loader.exec_module(_fx)
+C4["c4_pedestal_fix"] = 0                         # fresh mesh from this build
+_fx.apply(C4, log=lambda *a: print(*a, flush=True))
 
 # ------------------------------------------------------------------ nesting: C5 inside new C4, new C4 inside C1
 def outside(outer, inner, tol=0.002, n=4000):
