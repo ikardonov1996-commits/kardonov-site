@@ -26,6 +26,15 @@ if GLARE:
     nt.links.new(rl.outputs['Image'], g.inputs['Image']); nt.links.new(g.outputs['Image'], comp.inputs['Image'])
 
 HAM, CHI, CAM = D.objects["Hammer"], D.objects["Chisel"], sc.camera
+GLOW = bool(os.environ.get("GLOW"))
+if GLOW:   # glow layer: only emissive materials, everything else holdout; RGB on black + strong fog glow
+    for m in D.materials:
+        if m.name in ("Tool_GlowAmber", "Tool_GlowBlue", "Tool_GlowBlueRing") or not m.use_nodes: continue
+        nt = m.node_tree; out = [n for n in nt.nodes if n.type == 'OUTPUT_MATERIAL'][0]
+        h = nt.nodes.new("ShaderNodeHoldout"); nt.links.new(h.outputs[0], out.inputs["Surface"])
+    sc.render.image_settings.color_mode = 'RGB'
+    g = [n for n in sc.node_tree.nodes if n.type == 'GLARE'][0]
+    g.threshold = 0.3; g.size = 9; g.mix = 0.2
 CENTER = V((0, 0, 0.16))
 
 def kids(e): return [o for o in e.children_recursive if o.type == 'MESH']

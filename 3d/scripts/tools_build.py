@@ -55,8 +55,9 @@ M_LEATHER = mat("Tool_Leather", (0.56, 0.40, 0.25), rough=0.58, coat=0.1, bump=0
 M_AMBER = mat("Tool_GlowAmber", (1.0, 0.40, 0.05), rough=0.3, emis=(1.0, 0.40, 0.04), estr=5.0, vp=(1.0, 0.6, 0.2))
 M_GUN = mat("Tool_Gunmetal", (0.36, 0.40, 0.47), metal=1.0, rough=0.26, aniso=0.35, rough_var=0.06, bump=0.04, bump_scale=1500.0)
 M_GUNDARK = mat("Tool_GunmetalDark", (0.035, 0.04, 0.05), metal=0.8, rough=0.45)
-M_STEEL = mat("Tool_Steel", (0.82, 0.84, 0.88), metal=1.0, rough=0.2, aniso=0.5)
+M_STEEL = mat("Tool_Steel", (0.96, 0.97, 1.0), metal=0.8, rough=0.16, coat=0.6, aniso=0.3)
 M_BLUE = mat("Tool_GlowBlue", (0.02, 0.25, 0.9), rough=0.3, emis=(0.01, 0.30, 1.0), estr=5.0, vp=(0.25, 0.66, 1.0))
+M_BLUE_RING = mat("Tool_GlowBlueRing", (0.0, 0.0, 0.0), rough=0.35, emis=(0.01, 0.30, 1.0), estr=2.2, vp=(0.25, 0.66, 1.0))  # same hue, lower strength: wide rings stay saturated #3fa9ff
 
 # marble from the statue file (copied into this file; source untouched)
 with D.libraries.load(S + "/assets/asset_statue.blend", link=False) as (src, dst):
@@ -287,8 +288,8 @@ G, GUN, GD, ST, BL = 0, 1, 2, 3, 4
 spec = [
     (0.00, 0.93, 1.22, 0.012, 0, 0, BL),
     (0.05, 0.93, 1.22, 0.024, 0, 0, ST),
-    (1.90, 0.93, 1.16, 0.32, 0, 0, ST),
-    (1.96, 0.93, 1.16, 0.33, 0, 0, GUN),
+    (1.88, 0.93, 1.16, 0.32, 0, 0, G),
+    (2.06, 0.93, 1.16, 0.335, 0, 0, GUN),
     (6.30, 0.93, 1.0, 1.0, 0, 0, GUN),
     (6.30, 1.00, 1.0, 1.0, 0, 0, G),
     (6.80, 1.00, 1.0, 1.0, 0, 0, G),
@@ -317,6 +318,8 @@ spec = [
     (24.02, 0.30, 1.0, 1.0, 0, 0, GUN),
     (24.03, 0.02, 1.0, 1.0, 0, 0, GUN),
 ]
+BR = 5
+spec = [r[:6] + (BR if r[6] == G else r[6],) for r in spec]   # chisel = pure AI: former gold rings become blue neon
 rings = [oct_ring(z, R, sx, sy, de, do) for z, R, sx, sy, de, do, _ in spec]
 def cmat(i, j):
     m = spec[i][6]; q = j % 5; k = j // 5
@@ -326,7 +329,7 @@ def cmat(i, j):
         if (dk[0] > 0 or dk[1] > 0) and q == 2: return GD
         if (dk[0] > 0 or dk[1] > 0): return GD
     return m
-mb = MB("Chisel_Body", [M_GOLD, M_GUN, M_GUNDARK, M_STEEL, M_BLUE])
+mb = MB("Chisel_Body", [M_GOLD, M_GUN, M_GUNDARK, M_STEEL, M_BLUE, M_BLUE_RING])
 mb.loft(rings, cmat, cap0=BL, cap1=GUN)
 mb.build(CHI, sharp=28, bevel=0.03, seg=3, angle=25)
 

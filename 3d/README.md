@@ -34,7 +34,9 @@ WebP 1080×1440, прозрачный фон, одна неподвижная к
 
 `hammer_site`, `chisel_site` — WebP 1600×1600, прозрачный фон, ракурс 3/4.
 Молот = человек (мрамор, золото, кремовая кожа, янтарное свечение), долото = ИИ (гунметалл, голубое свечение, золотые акценты).
-Сборка: `scripts/tools_build.py`, рендеры: `scripts/tools_render.py`.
+`hammer_glow`, `chisel_glow` — слои свечения (тот же кадр), класть поверх с CSS `mix-blend-mode: screen`.
+Долото без золота: светлый титан, стальное лезвие, голубой неон.
+Сборка: `scripts/tools_build.py`, рендеры: `scripts/tools_render.py` (`GLOW=1` — слой свечения), `scripts/tools_glow_post.py`.
 
 ## previews
 
