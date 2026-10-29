@@ -64,6 +64,11 @@ with D.libraries.load(S + "/assets/asset_statue.blend", link=False) as (src, dst
     dst.materials = ["Marble"]
 M_MARBLE = D.materials["Marble"]
 
+# shared AI metal (same material as the robo-arm plating and the windlass crank grip)
+import sys; sys.path.append(S + "/scripts")
+from mat_ai_titanium import ai_titanium
+M_TI = ai_titanium()
+
 # ------------------------------------------------------------------ helpers
 def empty(name, loc=(0, 0, 0), parent=None, col=C_TOOLS, size=0.05):
     e = D.objects.new(name, None); e.empty_display_size = size; e.location = loc
@@ -293,23 +298,22 @@ spec = [
     (6.30, 0.93, 1.0, 1.0, 0, 0, GUN),
     (6.30, 1.00, 1.0, 1.0, 0, 0, G),
     (6.80, 1.00, 1.0, 1.0, 0, 0, G),
-    (6.80, 0.935, 1.0, 1.0, 0, 0, GUN),
-    (7.35, 0.94, 1.0, 1.0, 0, 0, GUN),
-    (7.50, 0.942, 1.0, 1.0, 0.085, 0, GUN),
-    (19.00, 1.0, 1.0, 1.0, 0.085, 0, GUN),
-    (19.15, 1.0, 1.0, 1.0, 0, 0, GUN),
-    (19.70, 1.0, 1.0, 1.0, 0, 0, GUN),
-    (20.30, 1.20, 1.0, 1.0, 0, 0, GUN),
+    # v4 neon rule: the 4 shaft channels run from the lower neon ring (6.80) straight into the
+    # step under the upper neon ring (20.30) - no ends mid-surface
+    (6.80, 0.935, 1.0, 1.0, 0.085, 0, GUN),
+    (7.35, 0.94, 1.0, 1.0, 0.085, 0, GUN),
+    (19.15, 1.0, 1.0, 1.0, 0.085, 0, GUN),
+    (19.70, 1.0, 1.0, 1.0, 0.085, 0, GUN),
+    (20.30, 1.20, 1.0, 1.0, 0.085, 0, GUN),
     (20.30, 1.42, 1.0, 1.0, 0, 0, G),
     (20.42, 1.44, 1.0, 1.0, 0, 0, G),
     (20.70, 1.44, 1.0, 1.0, 0, 0, G),
     (20.80, 1.40, 1.0, 1.0, 0, 0, G),
-    (20.80, 1.32, 1.0, 1.0, 0, 0, GUN),
-    (21.25, 1.32, 1.0, 1.0, 0, 0, GUN),
-    (21.40, 1.32, 1.0, 1.0, 0, 0.08, GUN),
-    (23.00, 1.32, 1.0, 1.0, 0, 0.08, GUN),
-    (23.15, 1.32, 1.0, 1.0, 0, 0, GUN),
-    (23.60, 1.32, 1.0, 1.0, 0, 0, GUN),
+    # head channels (odd faces): from the upper neon ring (20.80) up to the fold of the top chamfer (23.60)
+    (20.80, 1.32, 1.0, 1.0, 0, 0.08, GUN),
+    (21.25, 1.32, 1.0, 1.0, 0, 0.08, GUN),
+    (23.15, 1.32, 1.0, 1.0, 0, 0.08, GUN),
+    (23.60, 1.32, 1.0, 1.0, 0, 0.08, GUN),
     (23.98, 1.06, 1.0, 1.0, 0, 0, GUN),
     (23.98, 0.80, 1.0, 1.0, 0, 0, GD),
     (23.92, 0.80, 1.0, 1.0, 0, 0, BL),
@@ -329,7 +333,7 @@ def cmat(i, j):
         if (dk[0] > 0 or dk[1] > 0) and q == 2: return GD
         if (dk[0] > 0 or dk[1] > 0): return GD
     return m
-mb = MB("Chisel_Body", [M_GOLD, M_GUN, M_GUNDARK, M_STEEL, M_BLUE, M_BLUE_RING])
+mb = MB("Chisel_Body", [M_BLUE_RING, M_TI, M_GUNDARK, M_STEEL, M_BLUE, M_BLUE_RING])
 mb.loft(rings, cmat, cap0=BL, cap1=GUN)
 mb.build(CHI, sharp=28, bevel=0.03, seg=3, angle=25)
 

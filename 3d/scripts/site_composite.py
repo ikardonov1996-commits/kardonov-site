@@ -2,7 +2,9 @@
 # drum line, rotated around the pivot for swing), then the windlass front layer. Writes a contact sheet.
 import json, sys
 from PIL import Image
-d = sys.argv[1]; info = json.load(open(d + "/layers.json"))
+d = sys.argv[1]
+BG = tuple(int(sys.argv[2].lstrip("#")[i:i + 2], 16) for i in (0, 2, 4)) if len(sys.argv) > 2 else (40, 40, 44)   # e.g. "#0f0f12" = site bg
+info = json.load(open(d + "/layers.json"))
 W, H = info["canvas"]["w"], info["canvas"]["h"]; L = info["layers"]
 px, py = info["pivot_px"]; drop = info["drop_total_px"]
 blk = Image.open(d + "/block_rope.png").convert("RGBA")
@@ -11,7 +13,7 @@ def put(canvas, name):
     layer = Image.new("RGBA", (W, H), (0, 0, 0, 0)); layer.paste(im, (r["x"], r["y"]))
     canvas.alpha_composite(layer)
 def frame(descent, swing_deg, wi):
-    c = Image.new("RGBA", (W, H), (40, 40, 44, 255))
+    c = Image.new("RGBA", (W, H), (*BG, 255))
     put(c, "windlass_back_%02d" % wi)
     lay = Image.new("RGBA", (W, H), (0, 0, 0, 0)); b = L["block_rope"]
     lay.paste(blk, (b["x"], int(b["y"] - (1 - descent) * drop)))
@@ -23,7 +25,7 @@ def frame(descent, swing_deg, wi):
 shots = [frame(0.0, 0, 0), frame(0.5, 2.5, 4), frame(1.0, -2.0, 8)]
 k = 4 if W > 2000 else 3
 sh = [s.resize((s.width // k, s.height // k)) for s in shots]
-sheet = Image.new("RGB", (sum(s.width for s in sh), max(s.height for s in sh)), (40, 40, 44))
+sheet = Image.new("RGB", (sum(s.width for s in sh), max(s.height for s in sh)), BG)
 x = 0
 for s in sh: sheet.paste(s.convert("RGB"), (x, 0)); x += s.width
 sheet.save(d + "/composite_check.png"); print("OK", sheet.size)
