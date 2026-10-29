@@ -50,13 +50,13 @@ def mat(name, base, metal=0.0, rough=0.4, coat=0.0, emis=None, estr=0.0, vp=None
     return m
 
 M_GOLD = mat("Tool_Gold", (0.98, 0.62, 0.26), metal=1.0, rough=0.19, rough_var=0.04)
-M_BRONZE = mat("Tool_Bronze", (0.80, 0.52, 0.28), metal=1.0, rough=0.34, rough_var=0.05, bump=0.05, bump_scale=2500.0)
+M_BRONZE = mat("Tool_Bronze", (1.0, 0.70, 0.38), metal=1.0, rough=0.14, rough_var=0.03, aniso=0.3)
 M_LEATHER = mat("Tool_Leather", (0.56, 0.40, 0.25), rough=0.58, coat=0.1, bump=0.25, bump_scale=900.0, rough_var=0.06)
 M_AMBER = mat("Tool_GlowAmber", (1.0, 0.40, 0.05), rough=0.3, emis=(1.0, 0.40, 0.04), estr=5.0, vp=(1.0, 0.6, 0.2))
-M_GUN = mat("Tool_Gunmetal", (0.07, 0.075, 0.088), metal=0.95, rough=0.25, rough_var=0.06, bump=0.04, bump_scale=1500.0)
-M_GUNDARK = mat("Tool_GunmetalDark", (0.03, 0.032, 0.04), metal=0.8, rough=0.42)
+M_GUN = mat("Tool_Gunmetal", (0.36, 0.40, 0.47), metal=1.0, rough=0.26, aniso=0.35, rough_var=0.06, bump=0.04, bump_scale=1500.0)
+M_GUNDARK = mat("Tool_GunmetalDark", (0.035, 0.04, 0.05), metal=0.8, rough=0.45)
 M_STEEL = mat("Tool_Steel", (0.82, 0.84, 0.88), metal=1.0, rough=0.2, aniso=0.5)
-M_BLUE = mat("Tool_GlowBlue", (0.02, 0.25, 0.9), rough=0.3, emis=(0.01, 0.30, 1.0), estr=3.2, vp=(0.25, 0.66, 1.0))
+M_BLUE = mat("Tool_GlowBlue", (0.02, 0.25, 0.9), rough=0.3, emis=(0.01, 0.30, 1.0), estr=5.0, vp=(0.25, 0.66, 1.0))
 
 # marble from the statue file (copied into this file; source untouched)
 with D.libraries.load(S + "/assets/asset_statue.blend", link=False) as (src, dst):
@@ -340,6 +340,7 @@ area("Key", (0.55, -0.65, 0.75), 24.0, (1.0, 0.88, 0.76), 0.45)
 area("Fill", (-0.85, -0.45, 0.35), 8.0, (0.85, 0.88, 1.0), 0.9)
 area("Rim", (-0.25, 0.75, 0.65), 32.0, (1.0, 0.82, 0.62), 0.35)
 area("Top", (0.0, 0.0, 1.0), 5.0, (1.0, 0.95, 0.9), 1.2)
+area("RimCool", (0.7, 0.6, 0.45), 30.0, (0.75, 0.85, 1.0), 0.3)
 cam_d = D.cameras.new("Camera"); cam = D.objects.new("Camera", cam_d); C_STUDIO.objects.link(cam); sc.camera = cam
 cam_d.lens = 85; cam_d.clip_start = 0.01
 
