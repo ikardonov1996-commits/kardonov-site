@@ -1,0 +1,76 @@
+{
+ "hammer": {
+  "image": "hammer_profile.png",
+  "glow": "hammer_profile_glow.png",
+  "width": 718,
+  "height": 1600,
+  "px_per_m": 4332.1,
+  "points": {
+   "striking_face_center": [
+    97.8,
+    223.9
+   ],
+   "striking_face_center_alt": [
+    620.2,
+    223.9
+   ],
+   "handle_pivot_grip_end": [
+    359.0,
+    1501.8
+   ],
+   "grip_center": [
+    359.0,
+    1096.8
+   ],
+   "head_center": [
+    359.0,
+    223.9
+   ]
+  },
+  "vectors": {
+   "handle_up": [
+    0,
+    -1
+   ],
+   "striking_face_normal": [
+    -1,
+    0
+   ]
+  },
+  "notes": "Double-faced head: striking_face_center = left face (image -x), striking_face_center_alt = right face. handle_pivot_grip_end = bottom end of the pommel on the handle axis; grip_center = middle of the leather grip."
+ },
+ "chisel": {
+  "image": "chisel_profile.png",
+  "glow": "chisel_profile_glow.png",
+  "width": 364,
+  "height": 1600,
+  "px_per_m": 5840.65,
+  "points": {
+   "striking_top_center": [
+    182.0,
+    98.2
+   ],
+   "blade_tip": [
+    182.0,
+    1501.8
+   ]
+  },
+  "vectors": {
+   "axis_up": [
+    0,
+    -1
+   ]
+  },
+  "notes": "blade edge is seen end-on (wedge taper in profile); blade_tip = cutting edge centre, striking_top_center = centre of the butt top."
+ },
+ "strike_pose_example": {
+  "description": "as in profiles_preview.jpg: scale chisel by hammer.px_per_m/chisel.px_per_m (true relative size), rotate the hammer 90deg counter-clockwise (screen) so its left face points down, put hammer striking_face_center on chisel striking_top_center",
+  "hammer_rotation_deg_ccw_at_impact": 90,
+  "face_to_pivot_distance_px": 1304.3
+ },
+ "coordinates": "pixels in each PNG, origin top-left, x right, y down; glow PNGs share the canvas of their beauty PNG",
+ "brand_colours": {
+  "hammer_glow": "#FCCB84",
+  "chisel_glow": "#77D9FF"
+ }
+}
